@@ -4,12 +4,16 @@ import time
 import github
 import docker
 import CloudFlare
+import json
+import requests
 
 GH_ORG = "sledilnik"
 GH_REPO = "website"
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 ZONE_ID = '18d0b046b0c0fba45ed566930b832106'
+
+SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
 
 if not GITHUB_TOKEN:
   raise Exception("No GITHUB_TOKEN")
@@ -40,14 +44,35 @@ def start(num):
   try:
     image = "docker.pkg.github.com/sledilnik/website/web"
     tag = "pr-{}".format(num)
-    dclient.images.pull(image, tag=tag)
-    labels = {
-      "traefik.enable": "true",
-      "traefik.port": "80",
-      "traefik.http.routers.sledilnik-preview.rule": "HostRegexp(`{}.sledilnik.org`)".format(tag),
-      "traefik.http.routers.sledilnik-preview.tls": "true",
-    }
-    dclient.containers.run("{}:{}".format(image, tag), name="preview_{}".format(tag), auto_remove=True, network="lb_traefik", labels=labels, detach=True)
+    container_name = "preview_{}".format(tag)
+
+    try:
+      dclient.containers.get(container_name)
+    except docker.errors.NotFound:
+      dclient.images.pull(image, tag=tag)
+      labels = {
+        "traefik.enable": "true",
+        "traefik.port": "80",
+        "traefik.http.routers.sledilnik-preview.rule": "HostRegexp(`{}.sledilnik.org`)".format(tag),
+        "traefik.http.routers.sledilnik-preview.tls": "true",
+      }
+      dclient.containers.run("{}:{}".format(image, tag), name=container_name, auto_remove=True, network="lb_traefik", labels=labels, detach=True)
+      slack_data = {
+          "text": "Preview deploy availabe",
+          "attachments": [
+              {
+                  "text": "URL: https://pr-{}.sledilnik.org".format(num)
+              },
+              {
+                  "text": "PR: https://github.com/sledilnik/website/pull/{}".format(num)
+              }
+          ]
+      }
+      if SLACK_WEBHOOK_URL:
+        requests.post(
+          SLACK_WEBHOOK_URL, data=json.dumps(slack_data),
+          headers={'Content-Type': 'application/json'}
+        )
   except docker.errors.NotFound:
     print("No docker image for PR-{} found".format(num))
   except docker.errors.APIError:
