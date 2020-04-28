@@ -1,0 +1,31 @@
+---
+- hosts: webservers
+  vars:
+    app_root: /opt/traefik
+  tasks:
+    - name: Ensure root directory
+      file:
+        path: "{{ app_root }}"
+        state: directory
+        mode: '0750'
+
+    - name: Copy docker-compose.yml
+      template:
+        src: traefik/docker-compose.yml
+        dest: "{{ app_root }}/docker-compose.yml"
+        mode: '0644'
+
+    - name: Copy traefik.yml
+      copy:
+        src: traefik/traefik.yml
+        dest: "{{ app_root }}/traefik.yml"
+        mode: '0644'
+
+    - name: Create, pull and (re)start services
+      docker_compose:
+        project_name: lb
+        project_src: "{{ app_root }}"
+        pull: yes
+        state: present
+        restarted: yes
+

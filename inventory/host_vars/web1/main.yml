@@ -1,0 +1,3 @@
+---
+ansible_host: web1.sledilnik.org
+ansible_user: root

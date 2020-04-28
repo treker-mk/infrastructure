@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  web:
+    image: docker.pkg.github.com/sledilnik/website/web:latest
+    networks:
+      traefik:
+    labels:
+      traefik.enable: true
+      traefik.port: 80
+      traefik.http.routers.sledilnik.rule: "Host(`test.sledilnik.org`) || Host(`www.sledilnik.org`) || Host(`sledilnik.org`) || Host(`covid-19.sledilnik.org`) || Host(`www.covid-19.sledilnik.org`) "
+      traefik.http.routers.sledilnik.tls: true
+
+networks:
+  traefik:
+    external:
+      name: lb_traefik

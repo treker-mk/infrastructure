@@ -1,0 +1,25 @@
+providers:
+  docker:
+    exposedbydefault: false
+
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
+  traefik:
+    address: ":8080"
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /cert/sledilnik.crt
+        keyFile: /cert/sledilnik.key
+
+# API and dashboard configuration
+api:
+  dashboard: true
+  insecure: true
