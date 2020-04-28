@@ -1,6 +1,5 @@
 # Infrastructure
 
-
 ## Provision tarefik (loadbalancer)
 ```
 ansible-playbook -i inventory traefik.yml

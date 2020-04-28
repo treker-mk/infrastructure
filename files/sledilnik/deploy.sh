@@ -2,33 +2,33 @@
 
 DEPLOY_ENV=prod
 
-function deploy() {
-  SHA=$(curl -s https://api.github.com/repos/sledilnik/website/commits/master | jq .sha)
 
-  echo "Master SHA is $SHA"
+CURRENT_IMAGE=$(docker images docker.pkg.github.com/sledilnik/website/web | grep latest | awk '{print $3}')
+docker-compose pull
+NEW_IMAGE=$(docker images docker.pkg.github.com/sledilnik/website/web | grep latest | awk '{print $3}')
 
-  if [ $(docker ps -f name=prod_blue -q) ]
-  then
-      NEW="green"
-      OLD="blue"
-  else
-      NEW="blue"
-      OLD="green"
-  fi
+if [ "$NEW_IMAGE" = "$CURRENT_IMAGE" ]; then
+  echo "No new image available"
+  exit 0
+else
+  echo "New image available, starting deploy"
+fi
 
-  docker-compose pull
 
-  echo "Starting "$NEW" container"
-  docker-compose --project-name=${DEPLOY_ENV}_${NEW} up -d
+if [ $(docker ps -f name=prod_blue -q) ]
+then
+    NEW="green"
+    OLD="blue"
+else
+    NEW="blue"
+    OLD="green"
+fi
 
-  echo "Waiting..."
-  sleep 5s
+echo "Starting "$NEW" container"
+docker-compose --project-name=${DEPLOY_ENV}_${NEW} up -d
 
-  echo "Stopping "$OLD" container"
-  docker-compose --project-name=${DEPLOY_ENV}_$OLD stop
-}
+echo "Waiting..."
+sleep 5s
 
-while true; do
-  deploy
-  sleep 300
-done
+echo "Stopping "$OLD" container"
+docker-compose --project-name=${DEPLOY_ENV}_$OLD stop
