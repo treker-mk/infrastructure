@@ -123,7 +123,7 @@ if __name__ == "__main__":
   for container in dclient.containers.list(filters={'name': container_prefix}):
     pr_num = int(container.name.lstrip(container_prefix))
     if not pr_open(repo.get_pull(pr_num)):
-      logger.info("PR-{} is closed, stopping container", pr_num)
+      logger.info("PR-{} is closed, stopping container".format(pr_num))
       container.stop()
       delete_pr_zone(pr_num)
     
