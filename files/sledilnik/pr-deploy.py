@@ -22,7 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger('main')
 
 
-GH_ORG = "treker-mk"
+GH_ORG = "sledilnik"
 GH_REPO = "website"
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -42,21 +42,21 @@ repo = g.get_repo("{}/{}".format(GH_ORG, GH_REPO))
 
 def delete_pr_zone(num):
   try:
-    record = cf.zones.dns_records.get(ZONE_ID, params={'name': 'pr-{}.treker.mk'.format(num)})[0]
+    record = cf.zones.dns_records.get(ZONE_ID, params={'name': 'pr-{}.sledilnik.org'.format(num)})[0]
     cf.zones.dns_records.delete(ZONE_ID, record["id"])
   except IndexError:
     pass
 
 def add_pr_zone(num):
   try:
-    cf.zones.dns_records.get(ZONE_ID, params={'name': 'pr-{}.treker.mk'.format(num)})[0]
+    cf.zones.dns_records.get(ZONE_ID, params={'name': 'pr-{}.sledilnik.org'.format(num)})[0]
   except IndexError:
-    record = {'name':'pr-{}.treker.mk'.format(num), 'type':'CNAME', 'content':"web1.treker.mk", "proxied": True}
+    record = {'name':'pr-{}.sledilnik.org'.format(num), 'type':'CNAME', 'content':"web1.sledilnik.org", "proxied": True}
     cf.zones.dns_records.post(ZONE_ID, data=record)
 
 def start(num):
   try:
-    image = "docker.pkg.github.com/treker-mk/website/web"
+    image = "docker.pkg.github.com/sledilnik/website/web"
     tag = "pr-{}".format(num)
     container_name = "preview_{}".format(tag)
     
@@ -85,7 +85,7 @@ def start(num):
       labels = {
         "traefik.enable": "true",
         "traefik.port": "80",
-        "traefik.http.routers.sledilnik-{}.rule".format(tag): "HostRegexp(`{}.treker.mk`)".format(tag),
+        "traefik.http.routers.sledilnik-{}.rule".format(tag): "HostRegexp(`{}.sledilnik.org`)".format(tag),
         "traefik.http.routers.sledilnik-{}.tls".format(tag): "true",
       }
       dclient.containers.run("{}:{}".format(image, tag), name=container_name, auto_remove=True, network="lb_traefik", labels=labels, detach=True)
@@ -95,10 +95,10 @@ def start(num):
           "text": "Preview deploy availabe",
           "attachments": [
               {
-                  "text": "URL: https://pr-{}.treker.mk".format(num)
+                  "text": "URL: https://pr-{}.sledilnik.org".format(num)
               },
               {
-                  "text": "PR: https://github.com/treker-mk/website/pull/{}".format(num)
+                  "text": "PR: https://github.com/sledilnik/website/pull/{}".format(num)
               }
           ]
         }

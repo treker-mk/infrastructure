@@ -5,9 +5,9 @@
 DEPLOY_ENV=prod
 
 # compare images, switch deploy if newer image exists
-CURRENT_IMAGE=$(docker images docker.pkg.github.com/treker-mk/website/web | grep latest | awk '{print $3}')
+CURRENT_IMAGE=$(docker images docker.pkg.github.com/sledilnik/website/web | grep latest | awk '{print $3}')
 docker-compose pull
-NEW_IMAGE=$(docker images docker.pkg.github.com/treker-mk/website/web | grep latest | awk '{print $3}')
+NEW_IMAGE=$(docker images docker.pkg.github.com/sledilnik/website/web | grep latest | awk '{print $3}')
 
 if [ "$NEW_IMAGE" = "$CURRENT_IMAGE" ]; then
   echo "No new image available"
