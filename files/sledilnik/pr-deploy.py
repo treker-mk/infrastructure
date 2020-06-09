@@ -26,7 +26,7 @@ GH_ORG = "treker-mk"
 GH_REPO = "website"
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-ZONE_ID = '18d0b046b0c0fba45ed566930b832106'
+ZONE_ID = '1ac93fb163d32b31df01673c82f35164'
 
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
 
