@@ -2,7 +2,7 @@
 
 # deploy script for green/blue docker-compsoe deploy
 
-DEPLOY_ENV=prod
+DEPLOY_ENV=api
 
 # compare images, switch deploy if newer image exists
 CURRENT_IMAGE=$(docker images docker.pkg.github.com/treker-mk/data-api/api | grep latest | awk '{print $3}')
