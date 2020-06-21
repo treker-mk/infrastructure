@@ -10,10 +10,10 @@ docker-compose pull
 NEW_IMAGE=$(docker images docker.pkg.github.com/treker-mk/data-api/api | grep latest | awk '{print $3}')
 
 if [ "$NEW_IMAGE" = "$CURRENT_IMAGE" ]; then
-  echo "No new image available"
+  echo "API - No new image available"
   exit 0
 else
-  echo "New image available, starting deploy"
+  echo "API - New image available, starting deploy"
 fi
 
 
@@ -26,11 +26,11 @@ else
     OLD="green"
 fi
 
-echo "Starting "$NEW" container"
+echo "API - Starting "$NEW" container"
 docker-compose --project-name=${DEPLOY_ENV}_${NEW} up -d
 
-echo "Waiting..."
+echo "API - Waiting..."
 sleep 5s
 
-echo "Stopping "$OLD" container"
+echo "API - Stopping "$OLD" container"
 docker-compose --project-name=${DEPLOY_ENV}_$OLD stop

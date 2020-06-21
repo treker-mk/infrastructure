@@ -15,12 +15,6 @@
         dest: "{{ app_root }}/deploy.sh"
         mode: '0744'
 
-    - name: Copy pr-deploy.py
-      copy:
-        src: api/pr-deploy.py
-        dest: "{{ app_root }}/pr-deploy.py"
-        mode: '0744'
-
     - name: Copy docker-compose.yml
       copy:
         src: api/docker-compose.yml
