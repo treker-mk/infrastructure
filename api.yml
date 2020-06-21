@@ -1,0 +1,29 @@
+---
+- hosts: webservers
+  vars:
+    app_root: /opt/api
+  tasks:
+    - name: Ensure root directory
+      file:
+        path: "{{ app_root }}"
+        state: directory
+        mode: '0750'
+
+    - name: Copy deploy.sh
+      copy:
+        src: api/deploy.sh
+        dest: "{{ app_root }}/deploy.sh"
+        mode: '0744'
+
+    - name: Copy pr-deploy.py
+      copy:
+        src: api/pr-deploy.py
+        dest: "{{ app_root }}/pr-deploy.py"
+        mode: '0744'
+
+    - name: Copy docker-compose.yml
+      copy:
+        src: api/docker-compose.yml
+        dest: "{{ app_root }}/docker-compose.yml"
+        mode: '0644'
+        backup: yes

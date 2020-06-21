@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  web:
+    image: docker.pkg.github.com/treker-mk/data-api/api:latest
+    expose:
+      - 5000
+    networks:
+      traefik:
+    labels:
+      traefik.enable: true
+      traefik.port: 5000
+      traefik.http.routers.sledilnikapi.rule: Host(`api.treker.mk`)
+      traefik.http.routers.sledilnikapi.tls: true
+
+networks:
+  traefik:
+    external:
+      name: lb_traefik

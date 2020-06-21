@@ -5,7 +5,12 @@
 ansible-playbook -i inventory traefik.yml
 ```
 
-## Provison sledilnik webserver
+## Provison treker-mk data api
+```
+ansible-playbook -i inventory api.yml
+```
+
+## Provison treker-mk webserver
 ```
 ansible-playbook -i inventory sledilnik.yml
 ```
@@ -16,7 +21,7 @@ ansible-playbook -i inventory sledilnik.yml
 ansible-vault edit inventory/host_vars/web1/vault.yml
 ```
 
-## Deployment (quick)
+## Deployment Website (quick)
 
 Open byobu (screen)
 
@@ -29,6 +34,16 @@ while true; do ./pr-deploy.py; sleep 60; done
 Production deploy (`deploy.sh`):
 ```
 cd /opt/sledilnik
+while true; do ./deploy.sh; sleep 60; done
+```
+
+## Deployment API (quick)
+
+Open byobu (screen)
+
+Production deploy (`deploy.sh`):
+```
+cd /opt/api
 while true; do ./deploy.sh; sleep 60; done
 ```
 
